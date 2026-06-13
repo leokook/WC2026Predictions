@@ -1,0 +1,4 @@
+date,home,xg_home,goals_home,xg_away,goals_away,away,pred_outcome,actual_outcome,correct,mae_home,mae_away,brier
+Jun 11,Mexico,1.65,2,0.29,0,South Africa,H,H,True,0.346,0.288,1.0521
+Jun 11,South Korea,1.82,2,1.03,1,Czechia,H,H,True,0.183,0.027,1.0974
+Jun 12,Canada,0.95,1,0.74,1,Bosnia and Herzegovina,D,D,True,0.054,0.255,1.2248

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell([System.IO.Directory]::GetFiles\\(\"e:\\\\Nueva carpeta\\\\WC2026Predictions\"\\) + [System.IO.Directory]::GetDirectories\\(\"e:\\\\Nueva carpeta\\\\WC2026Predictions\"\\))"
+    ]
+  }
+}
