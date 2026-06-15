@@ -24,12 +24,13 @@ GROUPS: dict[str, list[str]] = {
 
 # Maps WC 2026 display name → martj42 dataset name.
 # Only entries that differ are listed; identity mapping is the default.
+# Verified against martj42 results.csv (June 2026 snapshot).
 DISPLAY_TO_MODEL: dict[str, str] = {
-    "Czechia":                  "Czech Republic",
-    "Türkiye":                  "Turkey",
-    "Bosnia and Herzegovina":   "Bosnia-Herzegovina",
-    "Curaçao":                  "Curacao",
-    "Ivory Coast":              "Ivory Coast",   # dataset uses this name
+    "Czechia":                  "Czech Republic",       # martj42: "Czech Republic"
+    "Türkiye":                  "Turkey",               # martj42: "Turkey"
+    "Bosnia and Herzegovina":   "Bosnia and Herzegovina",  # martj42: same (NOT "Bosnia-Herzegovina")
+    "Curaçao":                  "Curaçao",              # martj42: same, with ç  (NOT "Curacao")
+    "Ivory Coast":              "Ivory Coast",
     "South Korea":              "South Korea",
     "United States":            "United States",
     "DR Congo":                 "DR Congo",

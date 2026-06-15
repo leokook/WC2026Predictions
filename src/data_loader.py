@@ -22,6 +22,23 @@ RESULTS_URL = (
 DATA_DIR        = Path(__file__).parent.parent / "data" / "raw"
 WC2026_PATH     = Path(__file__).parent.parent / "data" / "wc2026_results.csv"
 
+# Translates names the user might write in wc2026_results.csv → exact martj42 name.
+# Verified against martj42 results.csv (June 2026 snapshot).
+# Only entries that actually differ from the martj42 stored name are needed;
+# tolerance aliases (e.g. "Curacao" without ç) are included for usability.
+_WC_TO_MARTJ42: dict[str, str] = {
+    # True renames
+    "Czechia":          "Czech Republic",
+    "Türkiye":          "Turkey",
+    "Turkiye":          "Turkey",          # accent-free alias
+    "Côte d'Ivoire":    "Ivory Coast",
+    # Tolerance aliases — user may omit special characters
+    "Curacao":          "Curaçao",         # without ç → with ç (martj42 uses ç)
+    "Bosnia-Herzegovina": "Bosnia and Herzegovina",  # hyphenated alias
+    # Bosnia and Herzegovina: martj42 stores exactly "Bosnia and Herzegovina", no rename needed
+    # Curaçao: martj42 stores exactly "Curaçao", no rename needed
+}
+
 # WC 2026 multiplier: each confirmed WC result is worth ~3 regular WC matches
 # from last year, anchoring model parameters to actual tournament performance.
 WC2026_WEIGHT_MULTIPLIER = 3.0
@@ -77,6 +94,11 @@ def download(force: bool = False) -> pd.DataFrame:
     return df
 
 
+def _martj42_name(name: str) -> str:
+    """Translate WC display names to martj42 dataset names."""
+    return _WC_TO_MARTJ42.get(name, name)
+
+
 def fill_wc2026_scores(
     df: pd.DataFrame,
     path: Path = WC2026_PATH,
@@ -84,14 +106,21 @@ def fill_wc2026_scores(
     """
     Fill in confirmed WC 2026 scores that aren't yet in the martj42 dataset.
 
-    The martj42 CSV includes the full WC schedule with NaN scores for future
-    matches.  This function updates those NaN rows with confirmed results,
-    and appends any match not yet in the schedule.
+    Normalises team names from the tracker CSV to martj42 conventions
+    (e.g. "Czechia" → "Czech Republic") before matching, preventing duplicate
+    rows when the display name differs from the dataset name.
     """
     if not path.exists():
         return df
 
     updates = pd.read_csv(path, parse_dates=["date"])
+    # Strip accidental whitespace in score columns (e.g. " 4" → "4")
+    for col in ("home_score", "away_score"):
+        if updates[col].dtype == object:
+            updates[col] = updates[col].astype(str).str.strip()
+    updates["home_score"] = pd.to_numeric(updates["home_score"], errors="coerce")
+    updates["away_score"] = pd.to_numeric(updates["away_score"], errors="coerce")
+
     if updates.empty:
         return df
 
@@ -101,23 +130,26 @@ def fill_wc2026_scores(
 
     for _, row in updates.iterrows():
         if pd.isna(row["home_score"]) or pd.isna(row["away_score"]):
-            continue  # skip unconfirmed rows in the tracker file
+            continue
+
+        # Translate display name → martj42 name before matching
+        home = _martj42_name(str(row["home_team"]))
+        away = _martj42_name(str(row["away_team"]))
 
         mask = (
             (df["date"] == row["date"])
-            & (df["home_team"] == row["home_team"])
-            & (df["away_team"] == row["away_team"])
+            & (df["home_team"] == home)
+            & (df["away_team"] == away)
         )
         if mask.any():
             df.loc[mask, "home_score"] = row["home_score"]
             df.loc[mask, "away_score"] = row["away_score"]
             updated += 1
         else:
-            # Not in martj42 yet — append with minimal metadata
             new = {
                 "date":       row["date"],
-                "home_team":  row["home_team"],
-                "away_team":  row["away_team"],
+                "home_team":  home,
+                "away_team":  away,
                 "home_score": row["home_score"],
                 "away_score": row["away_score"],
                 "tournament": "FIFA World Cup",

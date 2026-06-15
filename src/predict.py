@@ -9,8 +9,7 @@ Group stage rules (WC 2026 format):
 
 This module exposes:
   simulate_group_stage()  → per-team group-stage goal/point distributions
-  predict_goals()         → expected goals per team across the whole tournament
-                            (weighted by advancement probability at each stage)
+  group_stage_xg()        → expected goals per team across all group fixtures
 """
 
 from __future__ import annotations
@@ -70,9 +69,22 @@ def simulate_group_stage(
     model: DixonColesModel,
     n_sims: int = 10_000,
     seed: Optional[int] = 42,
+    features_dict: Optional[dict] = None,
+    actual_scores: Optional[dict] = None,
 ) -> pd.DataFrame:
     """
     Simulate the WC 2026 group stage n_sims times.
+
+    Parameters
+    ----------
+    model         : fitted DixonColesModel
+    n_sims        : number of Monte Carlo iterations
+    seed          : RNG seed
+    features_dict : optional dict (martj42_a, martj42_b) → MatchFeatures;
+                    if provided, xG is feature-adjusted before simulation
+    actual_scores : optional dict (martj42_home, martj42_away) → (home_score, away_score);
+                    matches in this dict use the actual score in every simulation run
+                    (no randomness for played fixtures)
 
     Returns a DataFrame with one row per team containing:
       group, avg_goals_scored, avg_goals_against, avg_points,
@@ -86,11 +98,32 @@ def simulate_group_stage(
         display: to_model_name(display) for grp in GROUPS.values() for display in grp
     }
 
+    # Pre-compute (possibly feature-adjusted) xG for every fixture
+    _fixture_xg: dict[tuple[str, str], tuple[float, float]] = {}
+    for grp, teams in GROUPS.items():
+        for ta, tb in combinations(teams, 2):
+            ma, mb = model_names[ta], model_names[tb]
+            lam, mu = model.predict_xg(ma, mb, neutral=True)
+            if features_dict is not None:
+                from .features import adjust_xg
+                feat = features_dict.get((ma, mb)) or features_dict.get((mb, ma))
+                if feat is not None:
+                    lam, mu = adjust_xg(lam, mu, ma, mb, feat)
+            _fixture_xg[(ma, mb)] = (lam, mu)
+
+    # Normalise actual_scores lookup: store both orderings
+    _played: dict[tuple[str, str], tuple[int, int]] = {}
+    if actual_scores:
+        for (h, a), score in actual_scores.items():
+            hs, as_ = int(score[0]), int(score[1])
+            _played[(h, a)] = (hs, as_)
+            _played[(a, h)] = (as_, hs)
+
     # Storage
-    goals_scored: dict[str, list[int]] = defaultdict(list)
+    goals_scored:  dict[str, list[int]] = defaultdict(list)
     goals_against: dict[str, list[int]] = defaultdict(list)
-    pts_store: dict[str, list[int]] = defaultdict(list)
-    placement: dict[str, list[int]] = defaultdict(list)  # 1,2,3,4
+    pts_store:     dict[str, list[int]] = defaultdict(list)
+    placement:     dict[str, list[int]] = defaultdict(list)  # 1,2,3,4
 
     for _ in range(n_sims):
         sim_points: dict[str, int] = defaultdict(int)
@@ -99,10 +132,15 @@ def simulate_group_stage(
 
         for grp, teams in GROUPS.items():
             for ta, tb in combinations(teams, 2):
-                ma = model_names[ta]
-                mb = model_names[tb]
-                ga_score, gb_score = model.simulate_match(ma, mb, neutral=True, n=1, rng=rng)
-                ga_s, gb_s = int(ga_score[0]), int(gb_score[0])
+                ma, mb = model_names[ta], model_names[tb]
+
+                # Use actual score if already played
+                if (ma, mb) in _played:
+                    ga_s, gb_s = _played[(ma, mb)]
+                else:
+                    lam, mu = _fixture_xg[(ma, mb)]
+                    ga_s = int(rng.poisson(lam))
+                    gb_s = int(rng.poisson(mu))
 
                 sim_gf[ta] += ga_s;  sim_ga[ta] += gb_s
                 sim_gf[tb] += gb_s;  sim_ga[tb] += ga_s
@@ -166,20 +204,37 @@ def simulate_group_stage(
 # Per-match expected goals for every group-stage fixture
 # ---------------------------------------------------------------------------
 
-def group_stage_xg(model: DixonColesModel) -> pd.DataFrame:
-    """Return expected goals for every group-stage match (66 fixtures)."""
+def group_stage_xg(
+    model: DixonColesModel,
+    features_dict: Optional[dict] = None,
+) -> pd.DataFrame:
+    """
+    Return expected goals for every group-stage match (66 fixtures).
+
+    Parameters
+    ----------
+    features_dict : optional dict (martj42_a, martj42_b) → MatchFeatures;
+                    if provided, xG values are feature-adjusted
+    """
     rows = []
     for grp, teams in sorted(GROUPS.items()):
         for ta, tb in combinations(teams, 2):
             ma, mb = to_model_name(ta), to_model_name(tb)
             lam, mu = model.predict_xg(ma, mb, neutral=True)
+
+            if features_dict is not None:
+                from .features import adjust_xg
+                feat = features_dict.get((ma, mb)) or features_dict.get((mb, ma))
+                if feat is not None:
+                    lam, mu = adjust_xg(lam, mu, ma, mb, feat)
+
             rows.append(
                 {
-                    "group":  grp,
-                    "team_a": ta,
-                    "xg_a":   round(lam, 3),
-                    "xg_b":   round(mu, 3),
-                    "team_b": tb,
+                    "group":    grp,
+                    "team_a":   ta,
+                    "xg_a":     round(lam, 3),
+                    "xg_b":     round(mu, 3),
+                    "team_b":   tb,
                     "total_xg": round(lam + mu, 3),
                 }
             )

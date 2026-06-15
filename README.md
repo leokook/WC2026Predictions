@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WC 2026 Goal Prediction Model
 
 Este proyecto implementa un modelo de Poisson Dixon-Coles para predecir resultados y simular la fase de grupos de la Copa del Mundo FIFA 2026.
@@ -27,3 +28,6 @@ Opciones principales:
 - `--sims 50000`: Aumenta las iteraciones de la simulación.
 - `--no-download`: Usa los datos en caché en lugar de descargar de nuevo.
 - `--compare`: Analiza la precisión del modelo contra partidos ya jugados del Mundial 2026.
+=======
+# WC2026Predictions
+>>>>>>> 2ed6693776862a3c2257790d155818f5c0f0005b

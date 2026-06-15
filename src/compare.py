@@ -21,14 +21,12 @@ from .wc2026_teams import GROUPS, to_model_name
 
 WC2026_PATH = Path(__file__).parent.parent / "data" / "wc2026_results.csv"
 
-# Map martj42 names -> WC display names (inverse of to_model_name)
+# martj42 display names (used in team_a/team_b columns of results)
+# martj42 name → WC display name (for human-readable output only).
+# Only non-identity entries are needed.
 _MODEL_TO_DISPLAY: dict[str, str] = {
-    "Czech Republic":    "Czechia",
-    "Turkey":            "Turkiye",
-    "Bosnia-Herzegovina": "Bosnia and Herzegovina",
-    "Bosnia and Herzegovina": "Bosnia and Herzegovina",
-    "Curacao":           "Curacao",
-    "Ivory Coast":       "Ivory Coast",
+    "Czech Republic": "Czechia",
+    "Turkey":         "Türkiye",
 }
 
 
@@ -36,12 +34,16 @@ def _display(name: str) -> str:
     return _MODEL_TO_DISPLAY.get(name, name)
 
 
-def load_actual_results(path: Path = WC2026_PATH) -> pd.DataFrame:
+def load_actual_results() -> pd.DataFrame:
     """
-    Merge confirmed WC 2026 results from the tracker file with matches
-    already in the martj42 dataset (June 11 onward, non-NaN scores).
+    Return confirmed WC 2026 results using normalised martj42 team names.
+
+    Loads June-11+ scores from the martj42 cached file, then fills/appends
+    any confirmed results from the tracker (wc2026_results.csv).  The tracker
+    names are translated to martj42 conventions before deduplication so that
+    e.g. "Czechia" and "Czech Republic" don't produce duplicate rows.
     """
-    from .data_loader import DATA_DIR
+    from .data_loader import DATA_DIR, _martj42_name
 
     raw = pd.read_csv(DATA_DIR / "results.csv", parse_dates=["date"])
     wc = raw[
@@ -49,15 +51,22 @@ def load_actual_results(path: Path = WC2026_PATH) -> pd.DataFrame:
         & (raw["date"] >= pd.Timestamp("2026-06-11"))
     ].dropna(subset=["home_score", "away_score"]).copy()
 
-    # Add confirmed results from tracker that may not be in martj42 yet
-    if path.exists():
-        extra = pd.read_csv(path, parse_dates=["date"])
+    if WC2026_PATH.exists():
+        extra = pd.read_csv(WC2026_PATH, parse_dates=["date"])
+        for col in ("home_score", "away_score"):
+            if extra[col].dtype == object:
+                extra[col] = extra[col].astype(str).str.strip()
+        extra["home_score"] = pd.to_numeric(extra["home_score"], errors="coerce")
+        extra["away_score"] = pd.to_numeric(extra["away_score"], errors="coerce")
         extra = extra.dropna(subset=["home_score", "away_score"])
+
         if not extra.empty:
+            # Normalise tracker names → martj42 names before merging
+            extra["home_team"] = extra["home_team"].apply(_martj42_name)
+            extra["away_team"] = extra["away_team"].apply(_martj42_name)
             extra["tournament"] = "FIFA World Cup"
             extra["neutral"]    = True
             wc = pd.concat([wc, extra], ignore_index=True)
-            # Deduplicate: keep tracker version (more up-to-date) on conflict
             wc = wc.drop_duplicates(
                 subset=["date", "home_team", "away_team"], keep="last"
             )
@@ -85,21 +94,51 @@ def _outcome_probs(lam: float, mu: float, max_goals: int = 10) -> tuple[float, f
     return p_home, p_draw, p_away
 
 
-def analyse(model: DixonColesModel) -> pd.DataFrame:
+def _build_pretournament_model(df_train: pd.DataFrame) -> DixonColesModel:
     """
-    Return a DataFrame comparing xG predictions vs actual goals for every
-    completed WC 2026 group-stage match.
+    Fit a model that excludes all WC 2026 match results (June 11 onward).
+
+    This is the only honest baseline for evaluating predictions: we want the
+    xG values the model would have produced BEFORE seeing each result, not
+    the values it produces after incorporating that result into its parameters.
+    Including a match in training and then 'predicting' it inflates accuracy
+    (data leakage / look-ahead bias).
+    """
+    df_pre = df_train[
+        ~(
+            df_train["tournament"].str.contains("FIFA World Cup", na=False)
+            & (df_train["date"] >= pd.Timestamp("2026-06-11"))
+        )
+    ].copy()
+    print(f"  Pre-tournament model: fitting on {len(df_pre):,} matches (WC 2026 excluded)")
+    return DixonColesModel().fit(df_pre)
+
+
+def analyse(model: DixonColesModel, df_train: pd.DataFrame) -> pd.DataFrame:
+    """
+    Compare PRE-MATCH xG predictions against actual WC 2026 goals.
+
+    Uses a pre-tournament model (trained without any WC 2026 results) so that
+    every prediction is genuinely out-of-sample.  The `model` argument (which
+    includes WC results) is only used to provide updated xG for upcoming
+    matches; the pre-tournament model drives the accuracy metrics.
     """
     actuals = load_actual_results()
     if actuals.empty:
         print("  No completed WC 2026 matches found.")
         return pd.DataFrame()
 
+    pre_model = _build_pretournament_model(df_train)
+
     rows = []
     for _, match in actuals.iterrows():
         ht = match["home_team"]
         at = match["away_team"]
-        lam, mu = model.predict_xg(ht, at, neutral=True)
+        try:
+            lam, mu = pre_model.predict_xg(ht, at, neutral=True)
+        except (KeyError, ValueError):
+            print(f"  SKIP: unknown team '{ht}' or '{at}'")
+            continue
 
         actual_h = int(match["home_score"])
         actual_a = int(match["away_score"])
