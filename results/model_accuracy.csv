@@ -7,9 +7,12 @@ Jun 13,Qatar,0.44,1,3.67,1,Switzerland,A,D,False,0.558,2.666,1.8493
 Jun 13,Brazil,1.22,1,1.0,1,Morocco,D,D,True,0.215,0.003,1.2594
 Jun 13,Haiti,0.99,0,2.19,1,Scotland,A,A,True,0.986,1.185,1.0631
 Jun 13,Australia,1.18,2,1.06,0,Türkiye,D,H,False,0.823,1.059,1.1895
+Jun 14,Ivory Coast,0.47,1,1.09,0,Ecuador,A,H,False,0.535,1.09,1.3714
 Jun 14,Germany,3.4,7,0.5,1,Curaçao,H,H,True,3.6,0.497,1.006
 Jun 14,Netherlands,0.72,2,1.3,2,Japan,D,D,True,1.276,0.702,1.2958
-Jun 14,Ivory Coast,0.47,1,1.09,0,Ecuador,A,H,False,0.535,1.09,1.3714
-Jun 14,Spain,3.63,0,0.5,0,Cape Verde,H,D,False,3.632,0.5,1.8329
-Jun 14,Belgium,1.15,1,0.66,1,Egypt,D,D,True,0.145,0.339,1.2692
-Jun 14,Saudi Arabia,0.43,1,1.18,1,Uruguay,A,D,False,0.574,0.184,1.3232
+Jun 15,Spain,3.63,0,0.5,0,Cape Verde,H,D,False,3.632,0.5,1.8329
+Jun 15,Belgium,1.15,1,0.66,1,Egypt,D,D,True,0.145,0.339,1.2692
+Jun 15,Saudi Arabia,0.43,1,1.18,1,Uruguay,A,D,False,0.574,0.184,1.3232
+Jun 15,Iran,1.6,2,0.74,2,New Zealand,H,D,False,0.403,1.258,1.3641
+Jun 16,France,1.55,3,1.16,1,Senegal,H,H,True,1.451,0.155,1.1441
+Jun 16,Iraq,1.79,1,0.63,4, Norway,H,A,False,0.793,3.37,1.4768
