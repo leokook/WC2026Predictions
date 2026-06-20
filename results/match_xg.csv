@@ -1,73 +1,73 @@
 group,team_a,xg_a,xg_b,team_b,total_xg
-A,Mexico,1.962,0.137,South Africa,2.1
-A,Mexico,1.084,0.282,South Korea,1.366
-A,Mexico,1.965,0.213,Czechia,2.178
-A,South Africa,0.495,1.853,South Korea,2.348
-A,South Africa,1.062,1.351,Czechia,2.413
-A,South Korea,1.805,0.775,Czechia,2.58
-B,Canada,2.193,0.574,Bosnia and Herzegovina,2.767
-B,Canada,3.416,0.335,Qatar,3.751
-B,Canada,1.418,1.208,Switzerland,2.626
-B,Bosnia and Herzegovina,1.981,0.737,Qatar,2.718
-B,Bosnia and Herzegovina,1.521,1.571,Switzerland,3.092
-B,Qatar,0.446,3.93,Switzerland,4.375
-C,Brazil,1.08,0.854,Morocco,1.933
-C,Brazil,2.931,0.445,Haiti,3.376
-C,Brazil,1.176,0.885,Scotland,2.061
-C,Morocco,1.533,0.295,Haiti,1.827
-C,Morocco,0.628,0.56,Scotland,1.188
-C,Haiti,0.384,1.397,Scotland,1.781
-D,United States,2.702,1.329,Paraguay,4.031
-D,United States,0.753,1.609,Australia,2.362
-D,United States,2.129,1.582,Türkiye,3.711
-D,Paraguay,0.634,1.882,Australia,2.516
-D,Paraguay,1.317,1.812,Türkiye,3.128
-D,Australia,1.648,0.538,Türkiye,2.186
-E,Germany,8.639,0.479,Curaçao,9.119
-E,Germany,1.778,0.733,Ivory Coast,2.512
-E,Germany,1.699,0.624,Ecuador,2.323
-E,Curaçao,0.426,2.882,Ivory Coast,3.308
-E,Curaçao,0.723,1.028,Ecuador,1.751
-E,Ivory Coast,0.542,0.432,Ecuador,0.974
-F,Netherlands,1.585,1.668,Japan,3.253
-F,Netherlands,3.689,1.51,Sweden,5.198
-F,Netherlands,4.295,0.74,Tunisia,5.035
-F,Japan,3.11,1.284,Sweden,4.394
-F,Japan,3.757,0.611,Tunisia,4.368
-F,Sweden,4.113,1.134,Tunisia,5.246
-G,Belgium,1.367,0.652,Egypt,2.019
-G,Belgium,1.993,1.158,Iran,3.151
-G,Belgium,2.319,1.098,New Zealand,3.416
-G,Egypt,0.942,1.138,Iran,2.081
-G,Egypt,1.169,0.99,New Zealand,2.159
-G,Iran,2.151,1.367,New Zealand,3.518
-H,Spain,1.38,0.12,Cape Verde,1.499
-H,Spain,2.412,0.262,Saudi Arabia,2.674
-H,Spain,1.133,0.444,Uruguay,1.577
-H,Cape Verde,0.617,0.656,Saudi Arabia,1.273
-H,Cape Verde,0.515,0.438,Uruguay,0.953
-H,Saudi Arabia,0.6,1.136,Uruguay,1.736
-I,France,3.032,0.899,Senegal,3.93
-I,France,3.62,0.393,Iraq,4.013
-I,France,1.638,1.451,Norway,3.088
-I,Senegal,2.004,0.731,Iraq,2.735
-I,Senegal,1.208,2.182,Norway,3.39
-I,Iraq,0.468,2.894,Norway,3.362
-J,Argentina,2.965,0.229,Algeria,3.194
-J,Argentina,2.032,0.251,Austria,2.283
-J,Argentina,5.362,0.222,Jordan,5.584
-J,Algeria,0.941,1.381,Austria,2.321
-J,Algeria,2.162,1.19,Jordan,3.351
-J,Austria,2.587,0.819,Jordan,3.405
-K,Portugal,1.499,0.474,DR Congo,1.973
-K,Portugal,2.652,0.625,Uzbekistan,3.277
-K,Portugal,1.731,1.873,Colombia,3.605
-K,DR Congo,0.876,0.59,Uzbekistan,1.466
-K,DR Congo,0.853,1.231,Colombia,2.084
-K,Uzbekistan,0.652,3.159,Colombia,3.811
-L,England,3.617,1.289,Croatia,4.906
-L,England,1.787,0.308,Ghana,2.094
-L,England,3.156,0.58,Panama,3.736
-L,Croatia,1.608,0.765,Ghana,2.373
-L,Croatia,2.433,1.168,Panama,3.601
-L,Ghana,1.006,0.484,Panama,1.491
+A,Mexico,1.902,0.148,South Africa,2.05
+A,Mexico,1.053,0.308,South Korea,1.361
+A,Mexico,1.911,0.224,Czechia,2.135
+A,South Africa,0.494,1.862,South Korea,2.356
+A,South Africa,1.055,1.31,Czechia,2.365
+A,South Korea,1.816,0.756,Czechia,2.572
+B,Canada,2.178,0.565,Bosnia and Herzegovina,2.744
+B,Canada,3.491,0.322,Qatar,3.813
+B,Canada,1.358,1.112,Switzerland,2.47
+B,Bosnia and Herzegovina,2.139,0.754,Qatar,2.893
+B,Bosnia and Herzegovina,1.541,1.547,Switzerland,3.088
+B,Qatar,0.44,3.955,Switzerland,4.395
+C,Brazil,0.925,0.785,Morocco,1.71
+C,Brazil,3.952,0.337,Haiti,4.289
+C,Brazil,1.766,0.646,Scotland,2.413
+C,Morocco,2.044,0.197,Haiti,2.242
+C,Morocco,0.924,0.367,Scotland,1.29
+C,Haiti,0.403,1.411,Scotland,1.814
+D,United States,2.601,1.311,Paraguay,3.913
+D,United States,1.117,1.845,Australia,2.962
+D,United States,1.977,1.369,Türkiye,3.346
+D,Paraguay,0.854,2.136,Australia,2.991
+D,Paraguay,1.224,1.563,Türkiye,2.787
+D,Australia,1.757,0.734,Türkiye,2.491
+E,Germany,9.444,0.528,Curaçao,9.972
+E,Germany,1.669,0.795,Ivory Coast,2.464
+E,Germany,1.69,0.665,Ecuador,2.355
+E,Curaçao,0.464,3.523,Ivory Coast,3.987
+E,Curaçao,0.791,1.197,Ecuador,1.988
+E,Ivory Coast,0.609,0.418,Ecuador,1.027
+F,Netherlands,1.633,1.717,Japan,3.35
+F,Netherlands,3.575,1.544,Sweden,5.119
+F,Netherlands,4.103,0.841,Tunisia,4.944
+F,Japan,2.958,1.295,Sweden,4.254
+F,Japan,3.541,0.686,Tunisia,4.227
+F,Sweden,3.947,1.167,Tunisia,5.114
+G,Belgium,1.409,0.684,Egypt,2.093
+G,Belgium,2.016,1.172,Iran,3.188
+G,Belgium,2.369,1.096,New Zealand,3.465
+G,Egypt,0.977,1.156,Iran,2.132
+G,Egypt,1.22,0.993,New Zealand,2.212
+G,Iran,2.159,1.347,New Zealand,3.506
+H,Spain,1.463,0.123,Cape Verde,1.586
+H,Spain,2.291,0.252,Saudi Arabia,2.543
+H,Spain,1.121,0.424,Uruguay,1.545
+H,Cape Verde,0.647,0.739,Saudi Arabia,1.387
+H,Cape Verde,0.566,0.485,Uruguay,1.051
+H,Saudi Arabia,0.634,1.128,Uruguay,1.762
+I,France,3.071,0.893,Senegal,3.965
+I,France,4.372,0.445,Iraq,4.817
+I,France,2.029,1.619,Norway,3.648
+I,Senegal,2.564,0.894,Iraq,3.458
+I,Senegal,1.542,2.644,Norway,4.186
+I,Iraq,0.689,4.153,Norway,4.842
+J,Argentina,2.869,0.186,Algeria,3.055
+J,Argentina,2.084,0.204,Austria,2.289
+J,Argentina,5.131,0.175,Jordan,5.306
+J,Algeria,0.988,1.376,Austria,2.365
+J,Algeria,2.142,1.178,Jordan,3.32
+J,Austria,2.528,0.856,Jordan,3.384
+K,Portugal,1.587,0.509,DR Congo,2.096
+K,Portugal,2.726,0.656,Uzbekistan,3.382
+K,Portugal,1.755,1.883,Colombia,3.638
+K,DR Congo,0.923,0.624,Uzbekistan,1.548
+K,DR Congo,0.875,1.248,Colombia,2.123
+K,Uzbekistan,0.66,3.107,Colombia,3.767
+L,England,3.617,1.349,Croatia,4.966
+L,England,1.812,0.327,Ghana,2.14
+L,England,2.973,0.598,Panama,3.571
+L,Croatia,1.695,0.811,Ghana,2.506
+L,Croatia,2.376,1.176,Panama,3.551
+L,Ghana,1.014,0.497,Panama,1.511
